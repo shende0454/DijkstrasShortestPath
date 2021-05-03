@@ -9,8 +9,8 @@ namespace GraphLib
     // IComparable will compare Weight only.
     public interface IDirWeightedEdge : IComparable<IDirWeightedEdge>
     {
-        double Weight { get; }
-        int Source { get; }
-        int Destination { get; }
+        double Weight { get; set; }
+        int Source { get; set; }
+        int Destination { get; set; }
     }
 }

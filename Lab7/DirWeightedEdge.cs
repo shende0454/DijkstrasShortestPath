@@ -8,6 +8,7 @@ namespace GraphLib
 {
     public class DirWeightedEdge : IDirWeightedEdge
     {
+        
         public DirWeightedEdge(int source, int destintion, double weight)
         {
           Source = source;
@@ -23,7 +24,7 @@ namespace GraphLib
 
         public int CompareTo(IDirWeightedEdge other)
         {
-            return this.CompareTo(other);
+            return other.CompareTo(this);
         }
     }
 }

@@ -9,29 +9,52 @@ namespace GraphLib
 {
     public class DijkstrasShortestPath : IDijkstrasShortestPath
     {
-        private DirWeightedEdge[] edgeTo;
+        private DirWeightedEdge[] theEdgeTo;
         public DijkstrasShortestPath(int source, IEdgeWeightedDigraph graph)
         {
             _bestPathTo = new double[graph.NVertices];
-            edgeTo = new DirWeightedEdge[graph.NVertices];
-            for (int v = 0; v < graph.NVertices; v++)
+            theEdgeTo = new DirWeightedEdge[graph.NVertices];
+            for (int vtx = 0; vtx < graph.NVertices; vtx++)
             {
-                _bestPathTo[v] = Double.PositiveInfinity;
+                _bestPathTo[vtx] = Double.PositiveInfinity;
             }
             _bestPathTo[source] = 0.0;
             _priorityQueue.Insert(source, 0.0);
             while (!_priorityQueue.IsEmpty())
+            {
                 Relax(graph, _priorityQueue.DeleteMin());
+            }
         }
 
         public double DistanceTo(int destination)
         {
             return _bestPathTo[destination];
         }
-
+        public bool HasPathTo(int v)
+        { 
+            return _bestPathTo[v] < Double.PositiveInfinity;
+        }
         public List<int> PathTo(int destination)
         {
-            return null;
+            if (!HasPathTo(destination))
+            {
+                return null;
+            }
+            Stack<int> p = new Stack<int>();
+            List<int> path = new List<int>();
+            p.Push(destination);
+            for (DirWeightedEdge e = theEdgeTo[destination]; e != null; e = theEdgeTo[e.Source])
+            { 
+                    p.Push(e.Source);
+                if (p.Peek() == 1)
+                {
+                    p.Pop();
+                }
+             
+            }
+            
+            
+            return p.ToList();
         }
 
         void Relax(IEdgeWeightedDigraph edge, int workingNode)
@@ -42,7 +65,7 @@ namespace GraphLib
                 if (_bestPathTo[w] > _bestPathTo[workingNode] + e.Weight)
                 {
                     _bestPathTo[w] = _bestPathTo[workingNode] + e.Weight;
-                    edgeTo[w] = e;
+                    theEdgeTo[w] = e;
                     if (_priorityQueue.Contains(w))
                     {
                         _priorityQueue.ChangeKey(w,_bestPathTo[w]);
@@ -58,8 +81,7 @@ namespace GraphLib
         IIndexedMinPriortyQueue<int, double> _priorityQueue = new IndexedMinPriorityQueue<int, double>();
 
         double[] _bestPathTo;
-        int[] _pathFrom;
-        bool[] _permanent;
+       
        
         public int Source { get; private set; }
     }
